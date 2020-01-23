@@ -12,11 +12,6 @@ dependencies = [
 [[package]]
 name = "book"
 version = "0.1.0"
-dependencies = [
- "rand",
- "regex",
- "unicase",
-]
 
 [[package]]
 name = "c2-chacha"
@@ -26,6 +21,10 @@ checksum = "214238caa1bf3a496ec3392968969cab8549f96ff30652c9e56885329315f6bb"
 dependencies = [
  "ppv-lite86",
 ]
+
+[[package]]
+name = "cacher"
+version = "0.1.0"
 
 [[package]]
 name = "cfg-if"
@@ -45,6 +44,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "guess"
+version = "0.1.0"
+dependencies = [
+ "rand",
+]
+
+[[package]]
+name = "hello"
+version = "0.1.0"
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -61,6 +71,14 @@ name = "memchr"
 version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3197e20c7edb283f87c071ddfc7a2cca8f8e0b888c242959846a6fce03c72223"
+
+[[package]]
+name = "minigrep"
+version = "0.1.0"
+dependencies = [
+ "regex",
+ "unicase",
+]
 
 [[package]]
 name = "ppv-lite86"
