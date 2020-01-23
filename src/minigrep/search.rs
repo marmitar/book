@@ -1,16 +1,55 @@
+//! # Minigrep regex builder and search function
+//!
+//! # Examples
+//!
+//! ## Regex building
+//!
+//! ```
+//! use book::minigrep;
+//!
+//! let regex = minigrep::regex_builder("the", false).unwrap();
+//!
+//! assert!(regex.is_match("The"))
+//! ```
+//!
+//! ## Invalid regex
+//!
+//! ```
+//! use book::minigrep;
+//!
+//! let result = minigrep::regex_builder("~*!)", false);
+//!
+//! assert!(result.is_err())
+//! ```
+//!
+//! ## Searching
+//!
+//! ```
+//! use book::minigrep;
+//!
+//! let regex = minigrep::regex_builder("the", true).unwrap();
+//! let mut iter = minigrep::search(regex, "The onion");
+//!
+//! assert_eq!(iter.next(), None)
+//! ```
+//!
+//! See the [module-level documentation](index.html) for more
 
-pub fn search<'a>(query: &'a str, contents: &'a str) -> impl Iterator<Item=&'a str> + 'a {
-    contents.lines()
-        .filter(move |line| line.contains(query))
+use regex::{Regex, RegexBuilder, Error};
+
+
+/// Tries to build a [`Regex`] for search
+pub fn regex_builder(query: &str, case_sensitive: bool) -> Result<Regex, Error> {
+    let mut builder = RegexBuilder::new(query);
+    builder.case_insensitive(! case_sensitive);
+
+    builder.build()
 }
 
-pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> impl Iterator<Item=&'a str> {
-    let query = query.to_lowercase();
-
+/// Search for lines where regex match
+pub fn search<'a>(regex: Regex, contents: &'a str) -> impl Iterator<Item=&'a str> {
     contents.lines()
-        .filter(move |line| {
-            line.to_lowercase().contains(&query)
-        })
+        .filter(move |line| regex.is_match(line))
 }
 
 
@@ -29,7 +68,7 @@ Duct tape.";
 
         assert_eq!(
             vec!["safe, fast, productive."],
-            search(query, contents).collect::<Vec<_>>()
+            search(regex_builder(query, true).unwrap(), contents).collect::<Vec<_>>()
         );
     }
 
@@ -44,7 +83,7 @@ Trust me.";
 
         assert_eq!(
             vec!["Rust:", "Trust me."],
-            search_case_insensitive(query, contents).collect::<Vec<_>>()
+            search(regex_builder(query, false).unwrap(), contents).collect::<Vec<_>>()
         );
     }
 }

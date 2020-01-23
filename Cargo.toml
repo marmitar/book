@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 rand = "*"
+unicase = "^2"
+regex = "^1.3"
