@@ -5,7 +5,7 @@
 //! ## Regex building
 //!
 //! ```
-//! use book::minigrep;
+//! use minigrep;
 //!
 //! let regex = minigrep::regex_builder("the", false).unwrap();
 //!
@@ -15,7 +15,7 @@
 //! ## Invalid regex
 //!
 //! ```
-//! use book::minigrep;
+//! use minigrep;
 //!
 //! let result = minigrep::regex_builder("~*!)", false);
 //!
@@ -25,7 +25,7 @@
 //! ## Searching
 //!
 //! ```
-//! use book::minigrep;
+//! use minigrep;
 //!
 //! let regex = minigrep::regex_builder("the", true).unwrap();
 //! let mut iter = minigrep::search(regex, "The onion");

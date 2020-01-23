@@ -1,6 +1,6 @@
 use std::process;
 
-use book::minigrep::{self, Config};
+use minigrep::{self, Config};
 
 
 fn main() {

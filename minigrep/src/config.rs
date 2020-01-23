@@ -61,8 +61,8 @@ impl Config {
     /// # Example
     ///
     /// ```
-    /// use book::minigrep::Config;
-    /// use book::minigrep::config::ConfigError::*;
+    /// use minigrep::Config;
+    /// use minigrep::config::ConfigError::*;
     /// use std::iter;
     ///
     /// assert_eq!(Config::new(iter::empty()), Err(NotEnoughArguments))
@@ -101,8 +101,8 @@ impl Config {
     /// # Example
     ///
     /// ```
-    /// use book::minigrep::Config;
-    /// use book::minigrep::config::ConfigError::*;
+    /// use minigrep::Config;
+    /// use minigrep::config::ConfigError::*;
     ///
     /// let args = "--unknown-flag word file.txt".split_whitespace();
     /// let flag = String::from("--unknown-flag");
@@ -120,7 +120,7 @@ impl Config {
     /// # Example
     ///
     /// ```
-    /// use book::minigrep::Config;
+    /// use minigrep::Config;
     ///
     /// match Config::from_args() {
     ///     Ok(config) => println!("CONFIGURATION: {:?}", config),

@@ -7,7 +7,7 @@
 //! ## Running with explicit arguments
 //!
 //! ```
-//! use book::minigrep::{Config, run};
+//! use minigrep::{Config, run};
 //!
 //! let args = "-i word file.txt";
 //! let config = Config::from_borrowed(args.split_whitespace())
@@ -21,8 +21,8 @@
 //! ## Configuration from shell arguments
 //!
 //! ```
-//! use book::minigrep::Config;
-//! use book::minigrep::config::ConfigError;
+//! use minigrep::Config;
+//! use minigrep::config::ConfigError;
 //!
 //! match Config::from_args() {
 //!     Ok(config) => println!("Got the configuration!"),
@@ -32,6 +32,9 @@
 //!     }
 //! }
 //! ```
+
+extern crate unicase;
+extern crate regex;
 
 pub mod config;
 pub mod search;
