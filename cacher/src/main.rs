@@ -30,14 +30,12 @@ fn generate_workout(intensity: u32, random_number: u32) {
             "Next, do {} situps!",
             expensive_result(intensity)
         );
+    } else if random_number == 3 {
+        println!("Take a break today! Remember to stay hydrated!");
     } else {
-        if random_number == 3 {
-            println!("Take a break today! Remember to stay hydrated!");
-        } else {
-            println!(
-                "Today, run for {} minutes!",
-                expensive_result(intensity)
-            );
-        }
+        println!(
+            "Today, run for {} minutes!",
+            expensive_result(intensity)
+        );
     }
 }

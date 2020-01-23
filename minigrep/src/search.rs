@@ -47,7 +47,7 @@ pub fn regex_builder(query: &str, case_sensitive: bool) -> Result<Regex, Error> 
 }
 
 /// Search for lines where regex match
-pub fn search<'a>(regex: Regex, contents: &'a str) -> impl Iterator<Item=&'a str> {
+pub fn search(regex: Regex, contents: &str) -> impl Iterator<Item=&str> {
     contents.lines()
         .filter(move |line| regex.is_match(line))
 }
