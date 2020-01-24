@@ -73,12 +73,12 @@ impl<T> List<T> {
     }
 
     #[inline]
-    pub fn iter<'a>(&'a self) -> Iter<'a, T> {
+    pub fn iter(&self) -> Iter<'_, T> {
         Iter { list: self }
     }
 
     #[inline]
-    pub fn iter_mut<'a>(&'a mut self) -> IterMut<'a, T> {
+    pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         IterMut { list: self }
     }
 }
