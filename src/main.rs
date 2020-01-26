@@ -1,56 +1,40 @@
+use std::sync::{Mutex, Arc};
+use std::thread::JoinHandle;
 use std::thread;
-use std::time::Duration;
-use std::sync::mpsc;
-use std::io::{self, BufRead};
+use std::time::{Duration, Instant};
 
 
-fn is_prime(&x: &u128) -> bool {
-    if x < 2 {
-        false
-    } else {
-        ! (2..x).any(|i| {
-            x % i == 0
-        })
+pub fn psum(val: &Arc<Mutex<u128>>, num: u64) -> Vec<JoinHandle<Duration>> {
+    let mut handles = vec![];
+    let end = Instant::now() + Duration::from_millis(20);
+
+    for i in 1..=num {
+        let counter = Arc::clone(&val);
+        let handle = thread::spawn(move || {
+            let dur = end - Instant::now();
+            thread::sleep(dur);
+
+            println!("At {}", i);
+            let mut num = counter.lock().unwrap();
+            println!("Doing {}", i);
+            *num += i as u128;
+
+            dur
+        });
+        handles.push(handle);
     }
+    handles
 }
 
-pub fn expensive_computation(x: u32) -> u128 {
-    (0..=x as u128).filter(is_prime).product()
-}
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let handles = psum(&counter, 10);
 
 
-pub fn main() {
-    let (tx_in, rx_in) = mpsc::channel();
-    let (tx_out, rx_out) = mpsc::channel();
-
-    let _ = thread::spawn(move || {
-        rx_in.iter()
-            .map(expensive_computation)
-            .try_for_each(move |x| {
-                tx_out.send(x)
-            })
-    });
-
-    let _stdin = io::stdin();
-    let mut stdin = _stdin.lock();
-    let mut buffer = String::with_capacity(1024);
-    let mut read = || {
-        stdin.read_line(&mut buffer).ok().and_then(|_| {
-            let x = buffer.trim_end().parse();
-            buffer.clear();
-            x.ok()
-        })
-    };
-
-    while read().and_then(|x| tx_in.send(x).ok()).is_some() {
-        loop {
-            if let Ok(ans) = rx_out.try_recv() {
-                println!("{}", ans);
-                break
-            } else {
-                println!("waiting...");
-                thread::sleep(Duration::from_nanos(250))
-            }
-        }
+    for (i, handle) in handles.into_iter().enumerate() {
+        println!("{}: waited {} ns", i, handle.join().unwrap().as_nanos())
+        ;
     }
+
+    println!("Result: {}", *counter.lock().unwrap());
 }
