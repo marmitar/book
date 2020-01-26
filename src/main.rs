@@ -1,39 +1,50 @@
-use std::sync::{Mutex, Arc};
-use std::thread::JoinHandle;
+use std::sync::{Mutex, Arc, MutexGuard};
+use std::time::Duration;
+use std::any::Any;
 use std::thread;
-use std::time::{Duration, Instant};
 
 
-pub fn psum(val: &Arc<Mutex<u128>>, num: u64) -> Vec<JoinHandle<Duration>> {
-    let mut handles = vec![];
-    let end = Instant::now() + Duration::from_millis(20);
+type Lock = Arc<Mutex<bool>>;
+struct Deadlock(Lock, Lock);
 
-    for i in 1..=num {
-        let counter = Arc::clone(&val);
-        let handle = thread::spawn(move || {
-            let dur = end - Instant::now();
-            thread::sleep(dur);
-
-            println!("At {}", i);
-            let mut num = counter.lock().unwrap();
-            println!("Doing {}", i);
-            *num += i as u128;
-
-            dur
-        });
-        handles.push(handle);
+impl Default for Deadlock {
+    fn default() -> Self {
+        Self(Arc::new(Mutex::new(false)), Arc::new(Mutex::new(false)))
     }
-    handles
 }
 
-fn main() {
-    let counter = Arc::new(Mutex::new(0));
-    let handles = psum(&counter, 10);
+impl Clone for Deadlock {
+    fn clone(&self) -> Self {
+        Self(self.1.clone(), self.0.clone())
+    }
+}
 
-
-    for (i, handle) in handles.into_iter().enumerate() {
-        println!("{}: waited {} ns", i, handle.join().unwrap().as_nanos())
+impl Deadlock {
+    fn lock_first(&self) -> MutexGuard<bool> {
+        self.0.lock().unwrap()
     }
 
-    println!("Result: {}", *counter.lock().unwrap());
+    fn lock_second(&self) -> MutexGuard<bool> {
+        self.1.lock().unwrap()
+    }
+
+    fn do_it(&self, wait: u64) {
+        let mut a = self.lock_first();
+        thread::sleep(Duration::from_millis(wait));
+        let b = self.lock_second();
+
+        *a = !*b;
+        println!("Done!")
+    }
+}
+
+
+fn main() -> Result<(), Box<dyn Any + Send + 'static>> {
+    let x = Deadlock::default();
+    let y = x.clone(); // clone swap mutexes
+
+    let handle = thread::spawn(move || x.do_it(5));
+    y.do_it(5);
+
+    handle.join()
 }
