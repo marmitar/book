@@ -33,7 +33,6 @@ fn main() {
 
     for (i, handle) in handles.into_iter().enumerate() {
         println!("{}: waited {} ns", i, handle.join().unwrap().as_nanos())
-        ;
     }
 
     println!("Result: {}", *counter.lock().unwrap());
