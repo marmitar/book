@@ -33,9 +33,6 @@
 //! }
 //! ```
 
-extern crate unicase;
-extern crate regex;
-
 pub mod config;
 pub mod search;
 
